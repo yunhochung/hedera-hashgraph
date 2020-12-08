@@ -24,7 +24,7 @@ async function wipeToken(tokenId, accountId) {
 
         let client = HederaClient;
 
-        console.info(`Token ID: ${tokenId}\n`);
+        console.info(`Token ID: ${tokenId}, Account ID: ${accountId}\n`);
 
         // 오퍼레이터 계정에서 사용중인 토큰 밸런스를 확인한다.
         const query = new AccountBalanceQuery()

@@ -22,18 +22,19 @@ async function createToken() {
     let client = HederaClient;
 
     // 토큰을 생성한다.
-    resp = await new TokenCreateTransaction()
+    let resp = await new TokenCreateTransaction()
       .setTokenName('YH TOKEN') // 토큰명
       .setTokenSymbol('YH') // 토큰 심볼명
       .setTreasuryAccountId(client.operatorAccountId)
       .setExpirationTime(Timestamp.fromDate(Instant.now().plus(Duration.ofDays(90)).toString())) // 만기일. 90일후
       .setInitialSupply(1000000)
       .setDecimals(0)
+      .setKycKey(client.operatorPublicKey)
+      .setWipeKey(client.operatorPublicKey)
+      .setAdminKey(client.operatorPublicKey) // 토큰 삭제시 필요. 미설정시 IMMUTABLE (NFT)
 
       // .setAdminKey(client.operatorPublicKey)
       // .setFreezeKey(client.operatorPublicKey)
-      // .setWipeKey(client.operatorPublicKey)
-      // .setKycKey(client.operatorPublicKey)
       // .setSupplyKey(client.operatorPublicKey)
       // .setFreezeDefault(false)
       // .setMaxTransactionFee(new Hbar(1000))
@@ -47,9 +48,7 @@ async function createToken() {
     console.log('The new token ID is ' + tokenId);
 
     // 차후 사용하기 위해 토큰 ID를 파일로 저장
-    fs.writeFile('/tmp/token_id', tokenId, function (err) {
-      if (err) return console.log(err);
-    });
+    fs.writeFileSync('/tmp/token_id', tokenId, { encoding: 'utf8', flag: 'w' });
   } catch (err) {
     console.error(err);
   }

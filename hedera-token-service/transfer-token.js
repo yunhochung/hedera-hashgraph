@@ -56,7 +56,7 @@ async function transferToken(tokenId) {
             .execute(client))
             .getReceipt(client);
 
-        console.log(`Associated account ${client.operatorAccountId} with token ${tokenId}`);
+        console.log(`Associated account ${newAccountId} with token ${tokenId}`);
 
         await (await new TokenGrantKycTransaction()
             .setAccountId(newAccountId)
@@ -74,9 +74,7 @@ async function transferToken(tokenId) {
 
         console.log(`Sent 10 tokens from account ${client.operatorAccountId} to account ${newAccountId} on token ${tokenId}`);
 
-        fs.writeFile('/tmp/new_account', newAccountId, function (err) {
-            if (err) return console.log(err);
-        });
+        fs.writeFileSync('/tmp/new_account', newAccountId, { encoding: 'utf8', flag: 'w' });
     } catch (err) {
         console.error(err);
     }
