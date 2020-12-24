@@ -8,7 +8,8 @@ const {
     AccountBalanceQuery,
     TokenDeleteTransaction,
     PrivateKey,
-    Hbar
+    Hbar,
+    HbarUnit
 } = require('@hashgraph/sdk');
 
 async function deleteToken(tokenId) {
@@ -36,6 +37,7 @@ async function deleteToken(tokenId) {
         // 토큰을 삭제한다.
         await (await new TokenDeleteTransaction()
             .setTokenId(tokenId)
+            .setMaxTransactionFee(new Hbar(100, HbarUnit.HBAR))
             .execute(client))
             .getReceipt(client);
 

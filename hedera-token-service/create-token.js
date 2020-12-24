@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const fs = require('fs');
 const HederaClient = require('./hedera-client');
-const { TokenCreateTransaction, PrivateKey, Hbar, Timestamp } = require('@hashgraph/sdk');
+const { TokenCreateTransaction, PrivateKey, Hbar, HbarUnit, Timestamp } = require('@hashgraph/sdk');
 const { Instant, Duration } = require('js-joda');
 
 async function createToken() {
@@ -32,6 +32,7 @@ async function createToken() {
       .setKycKey(client.operatorPublicKey)
       .setWipeKey(client.operatorPublicKey)
       .setAdminKey(client.operatorPublicKey) // 토큰 삭제시 필요. 미설정시 IMMUTABLE (NFT)
+      .setMaxTransactionFee(new Hbar(100, HbarUnit.HBAR))
 
       // .setAdminKey(client.operatorPublicKey)
       // .setFreezeKey(client.operatorPublicKey)

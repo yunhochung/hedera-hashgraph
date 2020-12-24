@@ -5,7 +5,7 @@ require('dotenv').config();
 const fs = require('fs');
 const HederaClient = require('./hedera-client');
 const {
-    AccountBalanceQuery, TokenGrantKycTransaction, AccountCreateTransaction, TransferTransaction, PrivateKey, Hbar, TokenAssociateTransaction
+    AccountBalanceQuery, TokenGrantKycTransaction, AccountCreateTransaction, TransferTransaction, PrivateKey, Hbar, HbarUnit, TokenAssociateTransaction
 } = require('@hashgraph/sdk');
 
 async function transferToken(tokenId) {
@@ -39,7 +39,7 @@ async function transferToken(tokenId) {
 
         let resp = await new AccountCreateTransaction()
             .setKey(newKey.publicKey)
-            .setInitialBalance(new Hbar(2))
+            .setInitialBalance(new Hbar(50, HbarUnit.HBAR))
             .execute(client);
 
         const transactionReceipt = await resp.getReceipt(client);
@@ -51,6 +51,7 @@ async function transferToken(tokenId) {
         await (await (await new TokenAssociateTransaction()
             .setAccountId(newAccountId)
             .setTokenIds([tokenId])
+            .setMaxTransactionFee(new Hbar(100, HbarUnit.HBAR))
             .freezeWith(client)
             .sign(newKey))
             .execute(client))
@@ -61,6 +62,7 @@ async function transferToken(tokenId) {
         await (await new TokenGrantKycTransaction()
             .setAccountId(newAccountId)
             .setTokenId(tokenId)
+            .setMaxTransactionFee(new Hbar(100, HbarUnit.HBAR))
             .execute(client))
             .getReceipt(client);
 
@@ -69,6 +71,7 @@ async function transferToken(tokenId) {
         await (await new TransferTransaction()
             .addTokenTransfer(tokenId, client.operatorAccountId, -10)
             .addTokenTransfer(tokenId, newAccountId, 10)
+            .setMaxTransactionFee(new Hbar(100, HbarUnit.HBAR))
             .execute(client))
             .getReceipt(client);
 

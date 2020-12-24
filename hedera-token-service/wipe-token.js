@@ -7,7 +7,9 @@ const HederaClient = require('./hedera-client');
 const {
     AccountBalanceQuery,
     TokenWipeTransaction,
-    PrivateKey
+    PrivateKey,
+    Hbar,
+    HbarUnit
 } = require('@hashgraph/sdk');
 
 async function wipeToken(tokenId, accountId) {
@@ -36,6 +38,7 @@ async function wipeToken(tokenId, accountId) {
             .setTokenId(tokenId)
             .setAccountId(accountId)
             .setAmount(10)
+            .setMaxTransactionFee(new Hbar(100, HbarUnit.HBAR))
             .execute(client))
             .getReceipt(client);
 
